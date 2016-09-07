@@ -171,10 +171,9 @@
 
    <field name="op" type="string" indexed="true" stored="true" />
    <field name="status" type="string" indexed="true" stored="true"/>
-   
+   <!-- mongo-connector needed to rollback  -->
    <field name="_ts" type="long" indexed="true" stored="true" />
    <field name="ns" type="string" indexed="true" stored="true"/>
-   
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
    <field name="s_text" type="text_ik" indexed="true" stored="false" multiValued="true" termVectors="true"/>
@@ -194,14 +193,13 @@
    <field name="s_des" type="text_ik" indexed="true" stored="true" multiValued="true" termVectors="true"/>
 
    <field name="detail" type="text_ik_htmlfilter" indexed="true" stored="true"/>
-  
- <!-- Dynamic field definitions allow using convention over configuration
+   <!-- Dynamic field definitions allow using convention over configuration
        for fields via the specification of patterns to match field names. 
        EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
        RESTRICTION: the glob-like pattern in the name attribute must have
        a "*" only at the start or the end.  -->
    
-<!--   <dynamicField name="tag*"  type="string"    indexed="false"  stored="true" />
+   <dynamicField name="tag*"  type="string"    indexed="false"  stored="true" />
    <dynamicField name="fkTag*"  type="string"    indexed="true"  stored="true" />
    <dynamicField name="title*" type="string" indexed="true" stored="true" />
    <dynamicField name="des*" type="string" indexed="true" stored="true" />
@@ -209,8 +207,7 @@
    <dynamicField name="s_n_*" type="long" indexed="true" stored="true" />
   
    <dynamicField name="s_*" type="string" indexed="true" stored="true" />
---> 
-<!--geo search needed -->
+ <!--geo search needed -->
    <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="true"/>
    <!-- uncomment the following to ignore any fields that don't already match an existing 
         field name or dynamic field, rather than reporting them as an error. 
@@ -316,33 +313,24 @@
 <fieldType name="text_ik" class="solr.TextField">
  <analyzer type="index">
 
+       <tokenizer class="org.wltea.analyzer.IKFactory"/>
 
-       <tokenizer class="org.wltea.analyzer.IKFactory" />
       </analyzer>
 
       <analyzer type="query">
 
+         <tokenizer class="org.wltea.analyzer.IKFactory"/>
 
-       <tokenizer class="org.wltea.analyzer.IKFactory" />
       </analyzer>
  
 </fieldType>
-
 <fieldType name="text_ik_htmlfilter" class="solr.TextField">
- <analyzer type="index">
+ <analyzer>
        <charFilter class="solr.HTMLStripCharFilterFactory"/>
-       <tokenizer class="org.wltea.analyzer.IKFactory" />
-
-      </analyzer>
-
-      <analyzer type="query">
-         <charFilter class="solr.HTMLStripCharFilterFactory"/>
-          <tokenizer class="org.wltea.analyzer.IKFactory"/>
-
+<tokenizer class="solr.WhitespaceTokenizerFactory"/>
       </analyzer>
 
 </fieldType>
-
 <fieldType name="text_ik_pinyin" class="solr.TextField">
     <analyzer type="index">
         <tokenizer class="org.wltea.analyzer.IKFactory"/>
