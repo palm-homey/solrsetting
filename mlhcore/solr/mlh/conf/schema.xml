@@ -327,7 +327,7 @@
 <fieldType name="text_ik_htmlfilter" class="solr.TextField">
  <analyzer>
        <charFilter class="solr.HTMLStripCharFilterFactory"/>
-<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+       <tokenizer class="org.wltea.analyzer.IKFactory"/>
       </analyzer>
 
 </fieldType>
