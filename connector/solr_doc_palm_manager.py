@@ -217,6 +217,7 @@ class DocManager(DocManagerBase):
         if doc.get("target"):
             doc["fkTag.0"]=doc.pop("target")
         
+        
         return self._parse_doc_to_solr_doc(doc);
             
     def _parse_doc_to_solr_doc(self,doc):
@@ -437,8 +438,15 @@ class DocManager(DocManagerBase):
         if not isinstance(docs,list):
             docs= [docs]
         docid=doc.get("_id")
-        self.remove(docid, namespace, timestamp)
-        logging.info("remove solr document which id is %s ,timestamp is %s" % (str(docid), str(timestamp)))
+        #self.remove(docid, namespace, timestamp)
+        #delete the child node about this file, TODO
+        if docid :
+            logging.info("remove solr document which id is %s _* ,timestamp is %s" % (str(docid), str(timestamp)))
+            self.solr.delete(q=u("_id:"+docid+"_*"),
+                             commit=(self.auto_commit_interval == 0))
+        else:
+            raise errors.OperationFailed("delete solr document error for the id(%s) is not valid" % str(docid));
+        
         if self.auto_commit_interval is not None:
             self.solr.add(docs,
                           commit=(self.auto_commit_interval == 0),
@@ -498,12 +506,10 @@ class DocManager(DocManagerBase):
         The input is a python dictionary that represents a mongo document.
         """
         if document_id :
-        
             self.solr.delete(id=u(document_id),
                              commit=(self.auto_commit_interval == 0))
             self.solr.delete(q=u("_id:"+document_id+"_*"),
-                             commit=(self.auto_commit_interval == 0))        
-
+                             commit=(self.auto_commit_interval == 0))
         else:
             raise errors.OperationFailed("delete solr document error for the id(%s) is not valid" % str(document_id));
 
@@ -539,4 +545,3 @@ class DocManager(DocManagerBase):
         for r in result:
             r['_id'] = r.pop(self.unique_key)
             return r
-
