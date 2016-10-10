@@ -193,6 +193,11 @@
    <field name="s_des" type="text_ik" indexed="true" stored="true" multiValued="true" termVectors="true"/>
 
    <field name="detail" type="text_ik_htmlfilter" indexed="true" stored="true"/>
+   
+   <!--是否被认领了 -->
+   <field name="hasOwner" type="string" indexed="true" stored="true" />
+   <!--认领人id  -->
+   <field name="ownerId" type="string" indexed="true" stored="true" />
    <!-- Dynamic field definitions allow using convention over configuration
        for fields via the specification of patterns to match field names. 
        EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
@@ -205,6 +210,11 @@
    <dynamicField name="des*" type="string" indexed="true" stored="true" />
    <dynamicField name="author*" type="string" indexed="true" stored="true" />
    <dynamicField name="s_n_*" type="long" indexed="true" stored="true" />
+   <!-- 项目分类 -->
+    <dynamicField name="classify*" type="string" indexed="true" stored="true" />
+	<!-- 项目类别 -->
+	<dynamicField name="category*" type="string" indexed="true" stored="true" />
+   
   
    <dynamicField name="s_*" type="string" indexed="true" stored="true" />
  <!--geo search needed -->
