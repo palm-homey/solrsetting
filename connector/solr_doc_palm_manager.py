@@ -450,15 +450,18 @@ class DocManager(DocManagerBase):
                              commit=(self.auto_commit_interval == 0))
         else:
             raise errors.OperationFailed("delete solr document error for the id(%s) is not valid" % str(docid));
-        
-        if self.auto_commit_interval is not None:
-            self.solr.add(docs,
-                          commit=(self.auto_commit_interval == 0),
-                          commitWithin=u(self.auto_commit_interval))
-        else:
-            self.solr.add(docs,
-                          commit=False)
-        logging.debug("insert into solr docs:(%s)" % str(docs))
+        try:
+            if self.auto_commit_interval is not None:
+                self.solr.add(docs,
+                              commit=(self.auto_commit_interval == 0),
+                              commitWithin=u(self.auto_commit_interval))
+            else:
+                self.solr.add(docs,
+                              commit=False)
+            logging.debug("insert into solr docs:(%s)" % str(docs))
+        except UnicodeDecodeError:
+            logging.exception(
+                "Unable to process processed document for UnicodeDecodeError, %r " % str(docs))
 
     @wrap_exceptions
     def bulk_upsert(self, docs, namespace, timestamp):
