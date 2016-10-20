@@ -170,9 +170,11 @@ class DocManager(DocManagerBase):
         collecion_name=self._get_collection_name(namespace)
         # 处理用户行为表数据
         if( "b_dynamic" == collecion_name):
+            logging.info("to process doc from b_dynamice ,the doc is %s" % str(doc[self.unique_key]))
             return self._parse_user_dynamic_collection(doc)
         
         #to process the content data
+        logging.info("begin to process b_content ,the doc is %s" % str(doc[self.unique_key]))
         doctemp=self._parse_content_doc(doc)
         
         if doctemp is None:
@@ -184,6 +186,7 @@ class DocManager(DocManagerBase):
             return None
         
         if (isinstance(doctemp, list) and len(doctemp) >1 ):
+            logging.info("to process doc from b_content after it is a list,the doc is %s" % str(doc[self.unique_key]))
             flat_doc=[]
             for docvalue in doctemp:
                 flat_doc.append(self._parse_doc_to_solr_doc(docvalue))
@@ -191,8 +194,9 @@ class DocManager(DocManagerBase):
             return flat_doc
         
         if (isinstance(doctemp, list)):
+            logging.info("to process doc from b_content after it is a one-value list,the doc is %s" % str(doc[self.unique_key]))
             return self._parse_doc_to_solr_doc(doctemp[0])
-        
+        logging.info("to process doc from b_content after it is a object,the doc is %s" % str(doc[self.unique_key]))
         return self._parse_doc_to_solr_doc(doctemp)
         
     def _get_collection_name(self,namespace):
