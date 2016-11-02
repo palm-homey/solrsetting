@@ -323,13 +323,13 @@
 <fieldType name="text_ik" class="solr.TextField">
  <analyzer type="index">
 
-       <tokenizer class="org.wltea.analyzer.IKFactory"/>
+       <tokenizer class="org.wltea.analyzer.IKFactory" useSmart="false"/>
 
       </analyzer>
 
       <analyzer type="query">
 
-         <tokenizer class="org.wltea.analyzer.IKFactory"/>
+         <tokenizer class="org.wltea.analyzer.IKFactory"  />
 
       </analyzer>
  
