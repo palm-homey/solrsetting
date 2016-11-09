@@ -323,14 +323,14 @@
 <fieldType name="text_ik" class="solr.TextField">
  <analyzer type="index">
 
-       <tokenizer class="org.wltea.analyzer.IKFactory" useSmart="false"/>
+       <tokenizer class="org.wltea.analyzer.IKFactory" useSmart="true"/>
 
       </analyzer>
 
       <analyzer type="query">
 
          <tokenizer class="org.wltea.analyzer.IKFactory"  />
-
+         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
       </analyzer>
  
 </fieldType>
