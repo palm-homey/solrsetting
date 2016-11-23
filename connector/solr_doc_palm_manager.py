@@ -173,6 +173,11 @@ class DocManager(DocManagerBase):
             logging.info("to process doc from b_dynamice ,the doc is %s" % str(doc[self.unique_key]))
             return self._parse_user_dynamic_collection(doc)
         
+        #处理用户表
+        if("T_USER" == collecion_name):
+            logging.info("to process doc from T_USER ,the doc is %s" % str(doc[self.unique_key]))
+            return self._parse_t_user_collection(doc)      
+        
         #to process the content data
         logging.info("begin to process b_content ,the doc is %s" % str(doc[self.unique_key]))
         doctemp=self._parse_content_doc(doc)
@@ -206,7 +211,7 @@ class DocManager(DocManagerBase):
         return coll;            
 
     def _parse_user_dynamic_collection(self,doc):
-        '''解析用户数据表，转换为搜索引擎识别的数据结构
+        '''解析用户行为表，转换为搜索引擎识别的数据结构
         '''
         if doc.get("content"):
             doc["detail"]=doc.pop("content")
@@ -223,6 +228,49 @@ class DocManager(DocManagerBase):
         
         
         return self._parse_doc_to_solr_doc(doc);
+    
+    def  _parse_t_user_collection(self,doc):
+        '''解析用户表，转换为搜索引擎识别的数据结构
+        '''
+        #用户昵称转化
+        nickName=doc.pop("nickName",None)
+        if nickName:
+            doc["title.0.name"]=nickName
+            doc["tag.0.name"]=nickName
+        #用户描述转化
+        description=doc.pop("description",None)
+        if description:
+            doc["title.1.name"]=description
+            doc["tag.1.name"]=description
+        
+        figureurl40=doc.pop("figureurl40",None)
+        if figureurl40:
+            doc["imgurl"]=figureurl40
+            
+        website=doc.pop("website",None)
+        if website:
+            doc["resurl"]=u"/u/"+str(website)
+            doc["title.2.name"]=website
+            doc["tag.2.name"]=website
+        #如果用户被锁定说明用户不能被搜索
+        isLocked=doc.pop("isLocked",None)
+        if isLocked == "N":
+            doc["status"]=u"released"
+        else:
+            doc["status"]=u"draft"
+            
+        #清除多余信息
+        doc.pop("password",None)
+        doc.pop("salt",None)
+        doc.pop("phoneNum",None)
+        doc.pop("userName",None)
+        
+        #补充必要信息
+        doc["type"]=u"user"
+        
+        
+        return self._parse_doc_to_solr_doc(doc);
+   
             
     def _parse_doc_to_solr_doc(self,doc):
         # SOLR cannot index fields within sub-documents, so flatten documents
