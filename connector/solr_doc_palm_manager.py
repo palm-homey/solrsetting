@@ -169,9 +169,11 @@ class DocManager(DocManagerBase):
         # 获取mongo表名称
         collecion_name=self._get_collection_name(namespace)
         # 处理用户行为表数据
+        # b_dynamic表不会再被处理的
         if( "b_dynamic" == collecion_name):
-            logging.info("to process doc from b_dynamice ,the doc is %s" % str(doc[self.unique_key]))
-            return self._parse_user_dynamic_collection(doc)
+            logging.error("to process doc from b_dynamice ,the doc is %s" % str(doc[self.unique_key]))
+            return None
+            #return self._parse_user_dynamic_collection(doc)
         
         #处理用户表
         if("T_USER" == collecion_name):
@@ -293,14 +295,15 @@ class DocManager(DocManagerBase):
         type=doc.get("type")
         if doc.get("releaseTime"):
             doc["createTime"]=doc.get("releaseTime")
-        if (type == "explain"):
-            return self._parse_explain(doc)
-        elif(type == "video"):
-            return self._parse_video(doc)
-        elif(type == "picture"):
-            return self._paser_picture(doc)
-        else:
-            return [doc]
+        #不再需要对图片视频文档等做特殊处理
+        # if (type == "explain"):
+        #     return self._parse_explain(doc)
+        # elif(type == "video"):
+        #     return self._parse_video(doc)
+        # elif(type == "picture"):
+        #     return self._paser_picture(doc)
+        # else:
+        return [doc]
     
     def _parse_explain(self,doc):
         """parse the content explain to replace the resurl value to be composited of fkTag
