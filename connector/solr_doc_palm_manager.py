@@ -548,12 +548,12 @@ class DocManager(DocManagerBase):
         docid=doc.get("_id")
         #self.remove(docid, namespace, timestamp)
         #delete the child node about this file, TODO
-        if docid :
-            logging.info("remove solr document which id is %s _* ,timestamp is %s" % (str(docid), str(timestamp)))
-            self.solr.delete(q=u("_id:"+docid+"_*"),
-                             commit=(self.auto_commit_interval == 0))
-        else:
-            raise errors.OperationFailed("delete solr document error for the id(%s) is not valid" % str(docid));
+        # if docid :
+        #     logging.info("remove solr document which id is %s _* ,timestamp is %s" % (str(docid), str(timestamp)))
+        #     self.solr.delete(q=u("_id:"+docid+"_*"),
+        #                      commit=(self.auto_commit_interval == 0))
+        # else:
+        #     raise errors.OperationFailed("delete solr document error for the id(%s) is not valid" % str(docid));
         try:
             if self.auto_commit_interval is not None:
                 self.solr.add(docs,
