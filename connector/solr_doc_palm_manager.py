@@ -295,6 +295,8 @@ class DocManager(DocManagerBase):
         type=doc.get("type")
         if doc.get("releaseTime"):
             doc["createTime"]=doc.get("releaseTime")
+        if (type == "product"):
+            return _parse_product(doc)
         #不再需要对图片视频文档等做特殊处理
         # if (type == "explain"):
         #     return self._parse_explain(doc)
@@ -304,6 +306,57 @@ class DocManager(DocManagerBase):
         #     return self._paser_picture(doc)
         # else:
         return [doc]
+
+    def _parse_product(self,doc):
+        """
+        处理项目数据，主要是对项目详情进行处理
+        """
+        spiltflag=False
+        resultlist=[]
+        #address-process
+        address=doc.get("address")
+        if address and isinstance(address,dict):
+            #获取地址各个字段的数据
+            adlist=[]
+            _add_list_with_not_empty_string(adlist,address.get("country"))
+            _add_list_with_not_empty_string(adlist,address.get("province"))
+            _add_list_with_not_empty_string(adlist,address.get("city"))
+            _add_list_with_not_empty_string(adlist,address.get("area"))
+            _add_list_with_not_empty_string(adlist,address.get("detail"))
+            #合并为真的地址
+            address_str="".join(adlist)
+            if address_str:
+                resultlist.append("项目地址:"+address_str)
+        #开发建设方处理
+        devbuilder=doc.get("devBuilder")
+        if devbuilder and isinstance(devbuilder,list):
+            devlist=[]
+            for v in devbuilder:
+                _add_list_with_not_empty_string(devlist,v.get("name"))
+            dev_str=",".join(devlist)
+            if dev_str:
+                resultlist.append("开发建设方:"+dev_str)
+        #主要设计师处理
+        maindesign=doc.get("buildingMainDesigner")
+        if maindesign and isinstance(maindesign,list):
+            designlist=[]
+            for v in designlist:
+                _add_list_with_not_empty_string(designlist,v.get("name"))
+            design_str=",".join(designlist)
+            if design_str:
+                resultlist.append("建筑主创设计师:"+design_str)
+        #建筑面积处理
+        buildingArea=doc.get("buildingArea")
+        if buildingArea :
+            resultlist.append("建筑面积:"+str(buildingArea)+"㎡")
+
+        doc["detail"]=" / ".join(resultlist)
+        return [doc]
+
+    def _add_list_with_not_empty_string(self,v_list,value):
+        if value :
+            v_list.append(str(value))
+
     
     def _parse_explain(self,doc):
         """parse the content explain to replace the resurl value to be composited of fkTag
@@ -603,3 +656,7 @@ class DocManager(DocManagerBase):
         for r in result:
             r['_id'] = r.pop(self.unique_key)
             return r
+
+if __name__ == "__main__":
+    docm=DocManager("")
+    print(docm._parse_product({}))
