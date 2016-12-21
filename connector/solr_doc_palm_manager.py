@@ -321,11 +321,21 @@ class DocManager(DocManagerBase):
         if address and isinstance(address,dict):
             #获取地址各个字段的数据
             adlist=[]
-            self._add_list_with_not_empty_string(adlist,address.get("country"))
-            self._add_list_with_not_empty_string(adlist,address.get("province"))
-            self._add_list_with_not_empty_string(adlist,address.get("city"))
-            self._add_list_with_not_empty_string(adlist,address.get("area"))
-            self._add_list_with_not_empty_string(adlist,address.get("detail"))
+            country=address.get("country")
+            if country:
+                self._add_list_with_not_empty_string(adlist,country.get("name"))
+            province=address.get("province")
+            if province:
+                self._add_list_with_not_empty_string(adlist,province.get("name"))
+            city=address.get("city")
+            if city:
+                self._add_list_with_not_empty_string(adlist,city.get("name"))
+            area=address.get("area")
+            if area:
+                self._add_list_with_not_empty_string(adlist,area.get("name"))
+            detail=address.get("detail")
+            if detail:
+                self._add_list_with_not_empty_string(adlist,detail.get("name"))
             #合并为真的地址
             address_str="".join(adlist)
             if address_str:
