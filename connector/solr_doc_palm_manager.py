@@ -296,7 +296,7 @@ class DocManager(DocManagerBase):
         if doc.get("releaseTime"):
             doc["createTime"]=doc.get("releaseTime")
         if (type == "product"):
-            return _parse_product(doc)
+            return self._parse_product(doc)
         #不再需要对图片视频文档等做特殊处理
         # if (type == "explain"):
         #     return self._parse_explain(doc)
@@ -318,11 +318,11 @@ class DocManager(DocManagerBase):
         if address and isinstance(address,dict):
             #获取地址各个字段的数据
             adlist=[]
-            _add_list_with_not_empty_string(adlist,address.get("country"))
-            _add_list_with_not_empty_string(adlist,address.get("province"))
-            _add_list_with_not_empty_string(adlist,address.get("city"))
-            _add_list_with_not_empty_string(adlist,address.get("area"))
-            _add_list_with_not_empty_string(adlist,address.get("detail"))
+            self._add_list_with_not_empty_string(adlist,address.get("country"))
+            self._add_list_with_not_empty_string(adlist,address.get("province"))
+            self._add_list_with_not_empty_string(adlist,address.get("city"))
+            self._add_list_with_not_empty_string(adlist,address.get("area"))
+            self._add_list_with_not_empty_string(adlist,address.get("detail"))
             #合并为真的地址
             address_str="".join(adlist)
             if address_str:
@@ -332,7 +332,7 @@ class DocManager(DocManagerBase):
         if devbuilder and isinstance(devbuilder,list):
             devlist=[]
             for v in devbuilder:
-                _add_list_with_not_empty_string(devlist,v.get("name"))
+                self._add_list_with_not_empty_string(devlist,v.get("name"))
             dev_str=",".join(devlist)
             if dev_str:
                 resultlist.append("开发建设方:"+dev_str)
@@ -341,7 +341,7 @@ class DocManager(DocManagerBase):
         if maindesign and isinstance(maindesign,list):
             designlist=[]
             for v in designlist:
-                _add_list_with_not_empty_string(designlist,v.get("name"))
+                self._add_list_with_not_empty_string(designlist,v.get("name"))
             design_str=",".join(designlist)
             if design_str:
                 resultlist.append("建筑主创设计师:"+design_str)
