@@ -14,6 +14,9 @@
 # limitations under the License.
 from __builtin__ import str
 from _ast import Str
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 """Receives documents from the oplog worker threads and indexes them
 into the backend.
