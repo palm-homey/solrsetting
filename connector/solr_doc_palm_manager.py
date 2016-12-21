@@ -353,7 +353,7 @@ class DocManager(DocManagerBase):
         maindesign=doc.get("buildingMainDesigner")
         if maindesign and isinstance(maindesign,list):
             designlist=[]
-            for v in designlist:
+            for v in maindesign:
                 self._add_list_with_not_empty_string(designlist,v.get("name"))
             design_str=",".join(designlist)
             if design_str:
