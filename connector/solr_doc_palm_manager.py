@@ -316,48 +316,41 @@ class DocManager(DocManagerBase):
         """
         spiltflag=False
         resultlist=[]
-        #address-process
-        address=doc.get("address")
-        if address and isinstance(address,dict):
-            #获取地址各个字段的数据
-            adlist=[]
-            country=address.get("country")
-            if country:
-                self._add_list_with_not_empty_string(adlist,country.get("name"))
-            province=address.get("province")
-            if province:
-                self._add_list_with_not_empty_string(adlist,province.get("name"))
-            city=address.get("city")
-            if city:
-                self._add_list_with_not_empty_string(adlist,city.get("name"))
-            area=address.get("area")
-            if area:
-                self._add_list_with_not_empty_string(adlist,area.get("name"))
-            detail=address.get("detail")
-            if detail:
-                self._add_list_with_not_empty_string(adlist,detail.get("name"))
-            #合并为真的地址
-            address_str="".join(adlist)
-            if address_str:
-                resultlist.append("项目地址:"+address_str)
+        
+        flat_doc = self._formatter.format_document(doc)
+        
+        #获取地址各个字段的数据
+        adlist=[]
+        country=flat_doc.get("address.country.name")
+        if country:
+            self._add_list_with_not_empty_string(adlist,country)
+        province=flat_doc.get("address.province.name")
+        if province:
+            self._add_list_with_not_empty_string(adlist,province)
+        city=flat_doc.get("address.city.name")
+        if city:
+            self._add_list_with_not_empty_string(adlist,city)
+        area=flat_doc.get("address.area.name")
+        if area:
+            self._add_list_with_not_empty_string(adlist,area)
+        detail=flat_doc.get("address.detail.name")
+        if detail:
+            self._add_list_with_not_empty_string(adlist,detail)
+        #合并为真的地址
+        address_str="".join(adlist)
+
+        if address_str:
+            resultlist.append("项目地址:"+address_str)
         #开发建设方处理
-        devbuilder=doc.get("devBuilder")
-        if devbuilder and isinstance(devbuilder,list):
-            devlist=[]
-            for v in devbuilder:
-                self._add_list_with_not_empty_string(devlist,v.get("name"))
-            dev_str=",".join(devlist)
-            if dev_str:
-                resultlist.append("开发建设方:"+dev_str)
+        
+        dev_str=self._get_flat_array(flat_doc,"devBuilder.",".name")
+        if dev_str:
+            resultlist.append("开发建设方:"+dev_str)
         #主要设计师处理
-        maindesign=doc.get("buildingMainDesigner")
-        if maindesign and isinstance(maindesign,list):
-            designlist=[]
-            for v in maindesign:
-                self._add_list_with_not_empty_string(designlist,v.get("name"))
-            design_str=",".join(designlist)
-            if design_str:
-                resultlist.append("建筑主创设计师:"+design_str)
+        design_str=self._get_flat_array(flat_doc,"buildingMainDesigner.",".name")
+        if design_str:
+            resultlist.append("建筑主创设计师:"+design_str)
+       
         #建筑面积处理
         buildingArea=doc.get("buildingArea")
         if buildingArea :
@@ -370,7 +363,22 @@ class DocManager(DocManagerBase):
         if value :
             v_list.append(str(value))
 
-    
+    def _get_flat_array(self,doc,prefix,suffix):
+        """
+        获取扁平化的数组并且连接为一体并返回
+        """
+        r=[]
+        i=0
+        while(True):
+            value=doc.get(prefix+str(i)+suffix)
+            if(value):
+                r.append(str(value))
+                i=i+1
+            else:
+                break;
+        return ",".join(r);
+
+
     def _parse_explain(self,doc):
         """parse the content explain to replace the resurl value to be composited of fkTag
         """
