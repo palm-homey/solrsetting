@@ -169,6 +169,13 @@ class DocManager(DocManagerBase):
         doc['ns'] = namespace
         doc['_ts'] = timestamp
         
+        #doc 提前进行扁平化
+        doc = self._formatter.format_document(doc)
+        #对doc中tag*变量长度进行限制
+        for k,v in d.items():
+            if(k[0:3] == "tag" && v && isinstance(v,str)):
+                doc[k]=v[0:20000]
+        
         # 获取mongo表名称
         collecion_name=self._get_collection_name(namespace)
         # 处理用户行为表数据
