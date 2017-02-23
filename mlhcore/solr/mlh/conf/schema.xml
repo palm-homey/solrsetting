@@ -261,7 +261,7 @@
    
    <copyField source="tag*" dest="s_suggest"/>
   
-   <copyField source="tag*" dest="s_terms"/>
+   <copyField source="tag*" dest="s_terms" maxChars="25000"/>
    
    <copyField source="fkTag*" dest="s_fkTag"/>
    
