@@ -172,8 +172,8 @@ class DocManager(DocManagerBase):
         #doc 提前进行扁平化
         doc = self._formatter.format_document(doc)
         #对doc中tag*变量长度进行限制
-        for k,v in d.items():
-            if(k[0:3] == "tag" && v && isinstance(v,str)):
+        for k,v in doc.items():
+            if(k[0:3] == "tag" and v and isinstance(v,basestring)):
                 doc[k]=v[0:20000]
         
         # 获取mongo表名称
