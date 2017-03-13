@@ -268,7 +268,7 @@ class DocManager(DocManagerBase):
         isLocked=doc.pop("isLocked",None)
         if isLocked == "N":
             doc["status"]=u"released"
-        else if isLocked == "Y":
+        elif isLocked == "Y":
             doc["status"]=u"draft"
             
         #清除多余信息
