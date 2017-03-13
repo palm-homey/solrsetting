@@ -268,7 +268,7 @@ class DocManager(DocManagerBase):
         isLocked=doc.pop("isLocked",None)
         if isLocked == "N":
             doc["status"]=u"released"
-        else:
+        else if isLocked == "Y":
             doc["status"]=u"draft"
             
         #清除多余信息
@@ -502,11 +502,7 @@ class DocManager(DocManagerBase):
                 if key.startswith(to_set):
                     if key == to_set or key[len(to_set)] == '.':
                         keys_to_pop.append(key)
-                #remove dotted-path the value ,with start with "s_"+to_set
-                tmp_to_set="s_"+to_set
-                if key.startswith(tmp_to_set):
-                    if key == tmp_to_set or key[len(tmp_to_set)] == '.':
-                        keys_to_pop.append(key)
+                
             for key in keys_to_pop:
                 doc.pop(key)
             doc[to_set] = value
