@@ -179,11 +179,10 @@ class DocManager(DocManagerBase):
         # 获取mongo表名称
         collecion_name=self._get_collection_name(namespace)
         # 处理用户行为表数据
-        # b_dynamic表不会再被处理的
         if( "b_dynamic" == collecion_name):
-            logging.error("to process doc from b_dynamice ,the doc is %s" % str(doc[self.unique_key]))
-            return None
-            #return self._parse_user_dynamic_collection(doc)
+            
+            logging.info("to process doc from b_dynamic ,the doc is %s" % str(doc[self.unique_key]))
+            return self._parse_user_dynamic_collection(doc)
         
         #处理用户表
         if("T_USER" == collecion_name):
@@ -227,18 +226,17 @@ class DocManager(DocManagerBase):
         '''
         if doc.get("content"):
             doc["detail"]=doc.pop("content")
-        if doc.get("createUser"):
-            createUser=doc.get("createUser")
-            author={}
-            if createUser.get("userId"):
-                author["id"]=createUser.get("userId")
-            if createUser.get("userName"):
-                author["name"]=createUser.get("userName")
-            doc["author"]=[author]
+        #赋予作者字段
+        if doc.get("createUser.userId"):
+            doc["author.0.id"]=doc.get("createUser.userId")
+        if doc.get("createUser.userName"):
+            doc["author.0.name"]=doc.get("createUser.userName")
+        
         if doc.get("target"):
             doc["fkTag.0"]=doc.pop("target")
         
-        
+        #内容不可查询
+        doc["op"]="LDEL"
         return self._parse_doc_to_solr_doc(doc);
     
     def  _parse_t_user_collection(self,doc):
