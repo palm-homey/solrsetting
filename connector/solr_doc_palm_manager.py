@@ -228,9 +228,9 @@ class DocManager(DocManagerBase):
             doc["detail"]=doc.pop("content")
         #赋予作者字段
         if doc.get("createUser.userId"):
-            doc["author.0.id"]=doc.get("createUser.userId")
+            doc["author.id"]=doc.get("createUser.userId")
         if doc.get("createUser.userName"):
-            doc["author.0.name"]=doc.get("createUser.userName")
+            doc["author.name"]=doc.get("createUser.userName")
         
         if doc.get("target"):
             doc["fkTag.0"]=doc.pop("target")
